@@ -1,0 +1,46 @@
+action = {
+}
+
+question = {
+}
+
+### get number of X
+#
+# noOfWhat : string : plural thing you want to count, i.e. questions
+## return : number : int : the resulting number, initiating as a blank
+def getNo(noOfWhat):
+    while True:
+            try:
+                number = int(input("Please enter the number of %s: " % noOfWhat))
+                break
+            except ValueError:
+                print("Please enter a valid number")
+    return number
+
+def fleshOut(object,type,noOf):
+    for i in range(noOf):
+        if type=='option':
+            object['options']['id'].append(input("Please enter %s #%s: " % (type,str(i+1))))
+            object['options']['opIds'].append(input("Please enter an ID for this %s: " % type))
+        else:
+            label = input('Please enter %s #%s: ' % (type,str(i+1)))
+            id = input('Please enter an ID for this %s: ' % type)
+            object[id] = {}
+            object[id]['id'] = id
+            object[id]['label'] = label
+        if type == 'question':
+            object[id]['options'] = {}
+            object[id]['options']['total'] = getNo('options')
+            object[id]['options']['id'] = []
+            object[id]['options']['opIds'] = []
+            object[id]['options'] = fleshOut(object[id],'option',object[id]['options']['total'])
+        if type == 'action':
+            object[id]['decisions'] = input("Please enter a decision for this %s: " % type)
+            object[id]['adminIds'] = input("Please enter an Admin Action ID for this %s: " % type)
+    if (type == 'action' or type == 'question'):
+        return object
+    if (type == 'option'):
+        return object['options']
+
+fleshOut(question,'question',2)
+print(question)
